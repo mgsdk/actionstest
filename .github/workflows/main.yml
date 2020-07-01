@@ -1,0 +1,27 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: '*'
+    tags: '*'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build_windows:
+    runs-on: windows-2019
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - uses: ilammy/msvc-dev-cmd@v1
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.5
+
+      # Runs a set of commands using the runners shell
+      - name: Create build directory
+        run: |
+          cmake -DCMAKE_BUILD_TYPE=Release $env:GITHUB_WORKSPACE/CMakeLists.txt -G "NMake Makefiles"
